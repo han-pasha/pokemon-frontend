@@ -23,7 +23,7 @@ const App = () => {
   const [pokemonStats, setPokemonStats] = useState([]);
 
   //INPUT FORMS
-  const [value, setValue] = useState();
+  const [value, setValue] = useState(1);
 
   /* 
     USING TWO EFFECT
@@ -45,23 +45,24 @@ const App = () => {
   }, [isAuthenticated]);
 
   // FOR CALLING API WITHOUT AUTH
-  const callApi = async (pokemon) => {
-    try {
-      const response = await fetch(`http://localhost:7000/pokemon/${pokemon}`);
-      const responseData = await response.json();
-      setMessage(responseData.message);
-      setPokemonName(responseData.name);
+  // const callApi = async (pokemon) => {
+  //   try {
+  //     const response = await fetch(`http://localhost:7000/pokemon/${pokemon}`);
+  //     const responseData = await response.json();
+  //     setMessage(responseData.message);
+  //     setPokemonName(responseData.name);
 
-      // IF UNDEFINED. MAP WOULD BE ERROR
-      if (responseData.stats !== undefined) {
-        setPokemonStats(responseData.stats);
-      }
-      console.log(responseData.stats);
-    } catch (error) {
-      setMessage(error.message);
-    }
-  };
+  //     // IF UNDEFINED. MAP WOULD BE ERROR
+  //     if (responseData.stats !== undefined) {
+  //       setPokemonStats(responseData.stats);
+  //     }
+  //     console.log(responseData.stats);
+  //   } catch (error) {
+  //     setMessage(error.message);
+  //   }
+  // };
 
+  // FOR CALLING RANDOM API WITHOUT AUTH
   const callRandomApi = async () => {
     try {
       var randNumber = Math.floor(Math.random() * (600 - 0) + 0);
@@ -72,41 +73,71 @@ const App = () => {
       setMessage(responseData.message);
       setPokemonName(responseData.name);
       setPokemonStats(responseData.stats);
-      console.log(responseData.stats);
     } catch (error) {
       setMessage(error.message);
     }
   };
 
-
-  const callSecureApi = async () => {
+  // FOR CALLING API WITH AUTH
+  const callSecureApi = async (pokemon) => {
     try {
       //FOR GETTING TOKEN FROM THE API
       const token = await getAccessTokenSilently();
-      const response = await fetch(`${serverUrl}/pokemon/withguard/1`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
+      const response = await fetch(
+        `${serverUrl}/pokemon/withguard/${pokemon}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       const responseData = await response.json();
-      console.log(responseData);
-      setMessage(responseData.message);
       setPokemonName(responseData.name);
-      setPokemonStats(responseData.stats);
+      setMessage(responseData.message);
+      if (responseData.stats !== undefined) {
+        setPokemonStats(responseData.stats);
+      }
     } catch (error) {
       setMessage(error.message);
     }
   };
 
+  const callSecureRandomApi = async () => {
+    try {
+      //FOR GETTING TOKEN FROM THE API
+      const token = await getAccessTokenSilently();
+      var randNumber = Math.floor(Math.random() * (600 - 0) + 0);
+      const response = await fetch(
+        `${serverUrl}/pokemon/withguard/${randNumber}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const responseData = await response.json();
+      setMessage(responseData.message);
+      setPokemonName(responseData.name);
+      if (responseData.stats !== undefined) {
+        setPokemonStats(responseData.stats);
+      }
+    } catch (error) {
+      setMessage(error.message);
+    }
+  };
+
+  // ON SUBMITTING VALUE
   const onSubmit = (event) => {
     event.preventDefault();
     if (value > 1100) {
       //LIMIT
       setMessage("VALUE KEJAUHAN");
     }
-    callApi(value);
+    callSecureApi(value);
   };
+
+  //FOR MAPPING THE POKEMON STATS
   const listStat = () => {
     return (
       <table className="table">
@@ -145,14 +176,12 @@ const App = () => {
           <input
             className="form-control"
             type="text"
-            value={value}
+            // value={value}
             placeholder="input using it's name or just a number"
             onChange={(e) => setValue(e.target.value)}
           />
+          {/* =============================================================== */}
           <div className="grid-pokemons">
-            <button type="submit" className="btn btn-success w-75 item1-area">
-              Get Pokemon
-            </button>
             <button
               type="button"
               className="btn btn-success w-75 item2-area"
@@ -162,10 +191,10 @@ const App = () => {
               Get Random Pokemon
             </button>
             <button
-              type="button"
+              type="submit"
               className="btn btn-danger w-75 item3-area"
+              value="submit"
               disabled={!isAuthenticated}
-              onClick={callSecureApi}
             >
               Get Spesific Pokemon
             </button>
@@ -173,9 +202,9 @@ const App = () => {
               type="button"
               className="btn btn-danger w-75 item4-area"
               disabled={!isAuthenticated}
-              onClick={callSecureApi}
+              onClick={callSecureRandomApi}
             >
-              Get Unique Pokemon
+              Get Random Pokemon
             </button>
           </div>
         </form>

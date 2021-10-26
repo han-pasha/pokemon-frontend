@@ -5,7 +5,7 @@ const Footer = () => (
     <div className="logo" />
     <p>
       Sample project created by{" "}
-      <a target="_blank" rel="noopener noreferrer" href="https://auth0.com">
+      <a target="_blank" rel="noopener noreferrer" href="#">
         Han
       </a>
     </p>

@@ -1,7 +1,7 @@
 .grid-container {
   display: grid;
   grid-template-columns: 1fr 4fr 1fr;
-  grid-template-rows: 1fr 5fr 40px;
+  grid-template-rows: 1fr 5fr 30px;
   grid-template-areas:
     "header header header"
     "lsidebar main rsidebar"
@@ -18,7 +18,8 @@
 }
 .main-area {
   grid-area: main;
-  margin-top: 100px;
+  margin-top: 50px;
+  margin-bottom: 50px;
   justify-self: center;
 }
 .rsidebar-area {
@@ -33,9 +34,9 @@
 
 .grid-pokemons {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 1fr;
-  grid-template-areas: "item1 item2 item3 item4";
+  grid-template-areas: "item2 item3 item4";
 }
 
 .item1-area {
@@ -43,6 +44,7 @@
   justify-self: center;
   margin: 25px 0px 75px 0px;
 }
+
 .item2-area {
   grid-area: item2;
   justify-self: center;
